@@ -11,22 +11,26 @@ describe Oystercard do
     expect(subject.balance).to eq(0)
   end
 
-  it "responds to #top_up" do
-    expect(subject).to respond_to(:top_up).with(1).argument
+  describe "#top_up" do
+
+    # it "responds to #top_up" do
+    #   expect(subject).to respond_to(:top_up).with(1).argument
+    # end
+
+    it "adds amount to #balance" do
+      card = Oystercard.new
+      amount = 20
+      card.top_up(amount)
+      expect(card.balance).to eq(amount)
+    end
+
+    it "raises an error if the maximum balance is exceeded" do
+      maximum_balance = Oystercard::CARD_LIMIT
+      subject.top_up(maximum_balance)
+      expect{ subject.top_up 1 }.to raise_error "Maximum balance of #{maximum_balance} exceeded"
+    end
   end
 
-  it "adds amount to #balance" do
-    card = Oystercard.new
-    amount = 20
-    card.top_up(amount)
-    expect(card.balance).to eq(amount)
-  end
-
-  it "raises an error if the maximum balance is exceeded" do
-    maximum_balance = Oystercard::CARD_LIMIT
-    subject.top_up(maximum_balance)
-    expect{ subject.top_up 1 }.to raise_error "Maximum balance of #{maximum_balance} exceeded"
-  end
   # Code above on walkthrough and replaces code below:
   # it "raises an error - attempt to raise card balance over £90" do
   #   card = Oystercard.new
@@ -44,34 +48,44 @@ describe Oystercard do
 
   describe "#touch_in" do
 
-    it "Sets station_id to the entry station" do
-      subject.top_up(10)
-      subject.touch_in
-      expect(subject.entry_station).to eq(:xx)
+    it "Raised error is balance below minimum" do
+      expect { subject.touch_in }.to raise_error("Insufficient funds, balance below #{Oystercard::MINIMUM_BALANCE}")
     end
 
-    it "sets :in_journey to true" do
-      subject.top_up(10)
-      subject.touch_in
-      expect(subject.in_journey).to eq(true)
-    end
+    context "topped up with 10 and then touched in" do
 
+      before(:each) do
+        subject.top_up(10)
+        subject.touch_in
+      end
+
+      it "Sets station_id to the entry station" do
+        expect(subject.entry_station).to eq(:xx)
+      end
+
+      it "sets :in_journey to true" do
+        expect(subject.in_journey).to eq(true)
+      end
+    end
   end
 
   describe "#touch_out" do
 
-    it "Sets station_id to exit station" do
-      subject.top_up(10)
-      subject.touch_in
-      subject.touch_out
-      expect(subject.exit_station).to eq(:xx)
-    end
+    context "topped up with 10, touched in and touched out" do
 
-    it "sets :in_journey to false" do
-      subject.top_up(10)
-      subject.touch_in
-      subject.touch_out
-      expect(subject.in_journey).to eq(false)
+      before(:each) do
+        subject.top_up(10)
+        subject.touch_in
+        subject.touch_out
+      end
+
+      it "Sets station_id to exit station" do
+        expect(subject.exit_station).to eq(:xx)
+      end
+
+      it "sets :in_journey to false" do
+        expect(subject.in_journey).to eq(false)
+      end
     end
   end
 
@@ -90,16 +104,7 @@ describe Oystercard do
       subject.in_journey?(true)
       expect(subject.in_journey).to eq(true)
     end
-
   end
-
-
-
-
-
-
-
-
 
 # experimental rspec code
   # it "expect card to be an instance of Oystercard" do
