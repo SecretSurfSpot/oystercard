@@ -1,6 +1,6 @@
 class Oystercard
   CARD_LIMIT = 90
-  attr_accessor :balance
+  attr_accessor :balance, :entry_station, :exit_station, :in_journey
 
   def initialize
     @balance = 0
@@ -12,6 +12,23 @@ class Oystercard
     # value = balance + amount
     # raise "Invalid request - Balance will exceed £#{CARD_LIMIT}" if value > 90
     self.balance += amount
+  end
+
+  def deduct
+  end
+
+  def touch_in(station_id=:xx)
+    @entry_station = station_id
+    in_journey?(true)
+  end
+
+  def touch_out(station_id=:xx)
+    @exit_station = station_id
+    in_journey?
+  end
+
+  def in_journey?(state=false)
+    @in_journey = state
   end
 
 end

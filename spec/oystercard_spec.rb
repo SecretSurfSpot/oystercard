@@ -2,6 +2,7 @@ require "oystercard"
 
 describe Oystercard do
 #  let(:subject) { Oystercard.new }
+  # Code below was first test written and is superceded by subsequent #balance tests
   # it "it responds to #balance" do
   #   expect(subject).to respond_to(:balance)
   # end
@@ -32,6 +33,71 @@ describe Oystercard do
   #   #card.top_up(100)
   #   expect { card.top_up(91) }.to raise_error "Invalid request - Balance will exceed £#{Oystercard::CARD_LIMIT}"
   # end
+
+  it "responds to #deduct" do
+    expect(subject).to respond_to(:deduct)
+  end
+
+  # it "responds to #touch_in" do
+  #   expect(subject).to respond_to(:touch_in)
+  # end
+
+  describe "#touch_in" do
+
+    it "Sets station_id to the entry station" do
+      subject.top_up(10)
+      subject.touch_in
+      expect(subject.entry_station).to eq(:xx)
+    end
+
+    it "sets :in_journey to true" do
+      subject.top_up(10)
+      subject.touch_in
+      expect(subject.in_journey).to eq(true)
+    end
+
+  end
+
+  describe "#touch_out" do
+
+    it "Sets station_id to exit station" do
+      subject.top_up(10)
+      subject.touch_in
+      subject.touch_out
+      expect(subject.exit_station).to eq(:xx)
+    end
+
+    it "sets :in_journey to false" do
+      subject.top_up(10)
+      subject.touch_in
+      subject.touch_out
+      expect(subject.in_journey).to eq(false)
+    end
+  end
+
+  describe "#in_journey?" do
+
+    # it "responds to #in_journey?" do
+    #   expect(subject).to respond_to(:in_journey?)
+    # end
+
+    it "in_journey defaults to false" do
+      subject.in_journey?
+      expect(subject.in_journey).to eq(false)
+    end
+
+    it "in_journey defaults to false" do
+      subject.in_journey?(true)
+      expect(subject.in_journey).to eq(true)
+    end
+
+  end
+
+
+
+
+
+
 
 
 
