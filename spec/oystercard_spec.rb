@@ -38,9 +38,9 @@ describe Oystercard do
   #   expect { card.top_up(91) }.to raise_error "Invalid request - Balance will exceed £#{Oystercard::CARD_LIMIT}"
   # end
 
-  it "responds to #deduct" do
-    expect(subject).to respond_to(:deduct)
-  end
+  # it "responds to #deduct" do
+  #   expect(subject).to respond_to(:deduct)
+  # end
 
   # it "responds to #touch_in" do
   #   expect(subject).to respond_to(:touch_in)
@@ -48,8 +48,8 @@ describe Oystercard do
 
   describe "#touch_in" do
 
-    it "Raised error is balance below minimum" do
-      expect { subject.touch_in }.to raise_error("Insufficient funds, balance below #{Oystercard::MINIMUM_BALANCE}")
+    it "Raised error is balance below minimum fare" do
+      expect { subject.touch_in }.to raise_error("Insufficient funds, balance below #{Oystercard::MINIMUM_FARE}")
     end
 
     context "topped up with 10 and then touched in" do
@@ -70,6 +70,12 @@ describe Oystercard do
   end
 
   describe "#touch_out" do
+
+    it "deducts minimum fare from the card balance" do
+      subject.top_up(10)
+      subject.touch_in
+      expect { subject.touch_out }.to change{ subject.balance }.by(-Oystercard::MINIMUM_FARE)
+    end
 
     context "topped up with 10, touched in and touched out" do
 
