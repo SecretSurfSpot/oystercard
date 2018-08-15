@@ -5,6 +5,7 @@ class Oystercard
 
   def initialize
     @balance = 0
+    @journey_array =[]
   end
 
   def top_up(amount)
@@ -22,12 +23,25 @@ class Oystercard
 
   def touch_out(station_id=:xx)
     @exit_station = station_id
+    add_journey
     @entry_station = nil
     deduct
   end
 
   def in_journey?
     !!@entry_station
+  end
+
+  def add_journey
+    @journey_array << { entry: @entry_station, exit: @exit_station }
+  end
+
+  def journey_history
+    str = ""
+    @journey_array.each do |element|
+      str += "Entry: #{element[:entry]}, Exit: #{element[:exit]}\n"
+    end
+    puts str
   end
 
   private

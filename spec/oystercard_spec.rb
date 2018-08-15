@@ -1,7 +1,9 @@
 require "oystercard"
 
 describe Oystercard do
-  let(:mockEntryStation) { double :station, station_id: :xx }
+#  let(:mockEntryStation) { double :station, station_id: :xx }
+  let(:mockEntryStation) {double :station}
+  let(:mockExitStation) {double :station}
 
 #  let(:subject) { Oystercard.new }
   # Code below was first test written and is superceded by subsequent #balance tests
@@ -58,11 +60,17 @@ describe Oystercard do
 
       before(:each) do
         subject.top_up(10)
-        subject.touch_in
       end
 
-      it "Sets station_id to the entry station" do
+      it "Sets station_id to default entry station" do
+        subject.touch_in
         expect(subject.entry_station).to eq(:xx)
+      end
+
+      it "Sets station_id to a given station" do
+        subject.touch_in(mockEntryStation)
+        p mockEntryStation
+        expect(subject.entry_station).to eq(mockEntryStation)
       end
     end
   end
@@ -80,14 +88,20 @@ describe Oystercard do
       before(:each) do
         subject.top_up(10)
         subject.touch_in
-        subject.touch_out
       end
 
       it "Sets station_id to exit station" do
+        subject.touch_out
         expect(subject.exit_station).to eq(:xx)
       end
 
+      it "Sets station_id to mockExitStation" do
+        subject.touch_out(mockExitStation)
+        expect(subject.exit_station).to eq(mockExitStation)
+      end
+
       it "sets #in_journey? to false" do
+        subject.touch_out
         expect(subject.in_journey?).to eq(false)
       end
     end
@@ -110,6 +124,17 @@ describe Oystercard do
       subject.touch_in
       p subject.entry_station
       expect(subject.in_journey?).to eq true
+    end
+  end
+
+  describe "#journey_history" do
+    it "prints a list of card journeys" do
+      subject.top_up(50)
+      subject.touch_in("Clapham")
+      subject.touch_out("Brixton")
+      p subject.journey_history
+      expect{ subject.journey_history }.to output("Entry: Clapham, Exit: Brixton\n").to_stdout
+      # expect(subject.journey_history).to eq("Entry: Clapham, Exit: Brixton")
     end
   end
 
