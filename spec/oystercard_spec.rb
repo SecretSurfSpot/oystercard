@@ -1,6 +1,8 @@
 require "oystercard"
 
 describe Oystercard do
+  let(:mockEntryStation) { double :station, station_id: :xx }
+
 #  let(:subject) { Oystercard.new }
   # Code below was first test written and is superceded by subsequent #balance tests
   # it "it responds to #balance" do
@@ -106,7 +108,7 @@ describe Oystercard do
       expect(subject.in_journey).to eq(false)
     end
 
-    it "in_journey defaults to false" do
+    it "in_journey returns true when passed true" do
       subject.in_journey?(true)
       expect(subject.in_journey).to eq(true)
     end

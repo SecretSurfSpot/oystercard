@@ -23,6 +23,7 @@ class Oystercard
 
   def touch_out(station_id=:xx)
     @exit_station = station_id
+    @entry_station = nil
     in_journey?
     deduct
   end
