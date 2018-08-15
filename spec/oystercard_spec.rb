@@ -62,10 +62,6 @@ describe Oystercard do
       it "Sets station_id to the entry station" do
         expect(subject.entry_station).to eq(:xx)
       end
-
-      it "sets :in_journey to true" do
-        expect(subject.in_journey).to eq(true)
-      end
     end
   end
 
@@ -89,8 +85,8 @@ describe Oystercard do
         expect(subject.exit_station).to eq(:xx)
       end
 
-      it "sets :in_journey to false" do
-        expect(subject.in_journey).to eq(false)
+      it "sets #in_journey? to false" do
+        expect(subject.in_journey?).to eq(false)
       end
     end
   end
@@ -101,14 +97,17 @@ describe Oystercard do
     #   expect(subject).to respond_to(:in_journey?)
     # end
 
-    it "in_journey defaults to false" do
-      subject.in_journey?
-      expect(subject.in_journey).to eq(false)
+    it "defaults to false" do
+      p subject.entry_station
+      expect(subject.in_journey?).to eq false
+      #expect(subject.in_journey).to eq(false)
     end
 
-    it "in_journey defaults to false" do
-      subject.in_journey?(true)
-      expect(subject.in_journey).to eq(true)
+    it "changes to true when I've touched in" do
+      subject.top_up(50)
+      subject.touch_in
+      p subject.entry_station
+      expect(subject.in_journey?).to eq true
     end
   end
 
